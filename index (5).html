@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ScriptForge.lua — Kho lưu trữ &amp; chia sẻ script Luau cho Roblox</title>
+<meta name="description" content="Tìm, chia sẻ và tải script Luau cho Roblox. Cộng đồng kiểm duyệt, gắn nhãn xác minh." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          base: '#0A0E17',
+          surface: '#10141F',
+          surface2: '#151A28',
+          edge: '#212838',
+          edgesoft: '#1A2030',
+          hi: '#E8EBF3',
+          mid: '#99A2B8',
+          low: '#5C6478',
+          nblue: '#45D0FF',
+          npurple: '#B48CFF',
+          ngreen: '#3DDC97',
+          norange: '#F2A65A',
+        },
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        },
+        boxShadow: {
+          glow: '0 0 0 1px rgba(69,208,255,0.35), 0 0 28px -6px rgba(69,208,255,0.45)',
+        },
+        keyframes: {
+          blink: { '0%, 49%': { opacity: 1 }, '50%, 100%': { opacity: 0 } },
+          toastIn: { '0%': { opacity: 0, transform: 'translateY(10px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+          modalIn: { '0%': { opacity: 0, transform: 'scale(0.96) translateY(8px)' }, '100%': { opacity: 1, transform: 'scale(1) translateY(0)' } },
+        },
+        animation: {
+          blink: 'blink 1s step-start infinite',
+          toastIn: 'toastIn 0.25s ease-out',
+          modalIn: 'modalIn 0.18s ease-out',
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  :root { color-scheme: dark; }
+  html { scroll-behavior: smooth; }
+  body { font-feature-settings: "cv11", "ss01"; }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .code-scroll::-webkit-scrollbar,
+  .modal-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+  .code-scroll::-webkit-scrollbar-track,
+  .modal-scroll::-webkit-scrollbar-track { background: transparent; }
+  .code-scroll::-webkit-scrollbar-thumb,
+  .modal-scroll::-webkit-scrollbar-thumb { background-color: #232B3D; border-radius: 999px; }
+
+  /* Prism token palette — tuned to match page accent colors */
+  code[class*="language-"], pre[class*="language-"] {
+    color: #C7CDE0;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    text-shadow: none;
+    background: none;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  pre[class*="language-"] { padding: 1.15rem 1.35rem; margin: 0; overflow: auto; }
+  .token.comment { color: #5C6478; font-style: italic; }
+  .token.keyword { color: #B48CFF; }
+  .token.function { color: #45D0FF; }
+  .token.string { color: #79E0A6; }
+  .token.number, .token.boolean { color: #F2A65A; }
+  .token.punctuation { color: #7A8399; }
+  .token.operator { color: #C7CDE0; }
+  .token.variable { color: #E8EBF3; }
+  .token.constant, .token.builtin { color: #79C7FF; }
+  .token.property { color: #79C7FF; }
+
+  :focus-visible { outline: 2px solid #45D0FF; outline-offset: 2px; border-radius: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+</head>
+
+<body class="bg-base text-hi font-sans antialiased selection:bg-nblue/30 selection:text-hi">
+
+<!-- ===================== HEADER ===================== -->
+<header class="sticky top-0 z-40 border-b border-edge bg-base/85 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-wrap items-center gap-3 py-3 md:py-0 md:h-16">
+
+      <!-- Logo -->
+      <a href="#" class="order-1 flex items-center gap-2.5 shrink-0">
+        <span class="grid place-items-center w-9 h-9 rounded-lg bg-gradient-to-br from-nblue to-npurple text-[#0A0E17] font-mono font-bold text-sm">{ }</span>
+        <span class="font-mono font-bold text-lg tracking-tight text-hi">ScriptForge<span class="text-nblue">.lua</span></span>
+      </a>
+
+      <!-- Search -->
+      <div class="order-3 w-full mt-1 md:order-2 md:w-auto md:mt-0 md:flex-1 md:max-w-md md:mx-4">
+        <div class="relative">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-low pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="9" cy="9" r="6.2" /><path d="M17 17l-3.5-3.5" stroke-linecap="round" />
+          </svg>
+          <input id="searchInput" type="text" placeholder="Tìm script, tên game, tác giả..."
+            class="w-full bg-surface border border-edge rounded-lg pl-9 pr-3 py-2 text-sm text-hi placeholder-low focus:outline-none focus:ring-2 focus:ring-nblue/40 focus:border-nblue/60 transition-colors" />
+        </div>
+      </div>
+
+      <!-- Auth + Upload -->
+      <div class="order-2 ml-auto flex items-center gap-2 md:order-3 md:ml-0">
+
+        <div id="authArea" class="flex items-center gap-2">
+          <button id="googleLoginBtn" class="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-lg border border-edge bg-surface hover:border-edgesoft hover:bg-surface2 transition-colors text-sm text-hi">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 48 48">
+              <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.6 32.9 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z"/>
+              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4c-7.5 0-14 4.2-17.7 10.7z"/>
+              <path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.2-5.1l-6.6-5.4C29.6 35.4 27 36 24 36c-5.2 0-9.5-3.1-11.3-7.5l-6.5 5C9.9 39.7 16.4 44 24 44z"/>
+              <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.7l6.6 5.4C41.9 36 44 30.6 44 24c0-1.2-.1-2.4-.4-3.5z"/>
+            </svg>
+            <span class="hidden lg:inline">Google</span>
+          </button>
+          <button id="appleLoginBtn" class="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-lg border border-edge bg-surface hover:border-edgesoft hover:bg-surface2 transition-colors text-sm text-hi">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M16.3 1c.1 1.2-.4 2.4-1.1 3.3-.7.9-1.9 1.6-3.1 1.5-.1-1.2.5-2.4 1.2-3.2C14 1.7 15.2 1 16.3 1zM20.7 17.2c-.5 1.1-.7 1.6-1.4 2.6-.9 1.4-2.2 3.1-3.8 3.1-1.4 0-1.8-.9-3.7-.9s-2.4.9-3.7.9c-1.6 0-2.8-1.5-3.7-2.9-2.6-3.9-2.9-8.5-1.3-10.9 1.1-1.7 2.9-2.8 4.6-2.8 1.7 0 2.8 1 4.2 1 1.3 0 2.2-1 4.2-1 1.5 0 3.1.8 4.2 2.3-3.7 2-3.1 7.3.4 8.6z"/></svg>
+            <span class="hidden lg:inline">Apple</span>
+          </button>
+        </div>
+
+        <div id="userArea" class="hidden relative">
+          <button id="userMenuBtn" class="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-lg border border-edge bg-surface hover:bg-surface2 transition-colors">
+            <span id="userAvatar" class="w-7 h-7 rounded-full bg-gradient-to-br from-nblue to-npurple grid place-items-center text-[11px] font-mono font-bold text-[#0A0E17]">?</span>
+            <span id="userName" class="text-sm text-hi hidden sm:inline max-w-[8rem] truncate"></span>
+            <svg class="w-3.5 h-3.5 text-mid shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7.5l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div id="userDropdown" class="hidden absolute right-0 mt-2 w-44 rounded-lg border border-edge bg-surface2 shadow-xl py-1 text-sm">
+            <p id="userDropdownEmail" class="px-3 py-2 text-low text-xs border-b border-edgesoft truncate"></p>
+            <button id="logoutBtn" class="w-full text-left px-3 py-2 text-mid hover:text-hi hover:bg-surface transition-colors">Đăng xuất</button>
+          </div>
+        </div>
+
+        <button id="openUploadBtn" data-action="open-upload" class="flex items-center gap-1.5 pl-3 pr-3.5 py-2 rounded-lg bg-gradient-to-r from-nblue to-npurple text-[#0A0E17] font-semibold text-sm shadow-glow hover:brightness-110 active:brightness-95 transition-all">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13V4M10 4l-3.5 3.5M10 4l3.5 3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 14.5v1a1.5 1.5 0 001.5 1.5h9a1.5 1.5 0 001.5-1.5v-1" stroke-linecap="round"/></svg>
+          <span class="hidden sm:inline">Tải lên Script</span>
+          <span class="sm:hidden">Tải lên</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="relative overflow-hidden border-b border-edgesoft">
+  <div aria-hidden="true" class="pointer-events-none absolute -top-24 left-1/4 w-[36rem] h-[36rem] rounded-full bg-nblue/10 blur-3xl"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute -top-16 right-0 w-[28rem] h-[28rem] rounded-full bg-npurple/10 blur-3xl"></div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 grid lg:grid-cols-2 gap-10 items-center">
+    <div>
+      <p class="font-mono text-sm text-nblue mb-3">// kho lưu trữ script luau</p>
+      <h1 class="font-mono text-3xl sm:text-4xl font-bold text-hi leading-tight tracking-tight">
+        Tìm, chia sẻ và chạy<br class="hidden sm:block" /> script Roblox an toàn hơn.
+      </h1>
+      <p class="mt-4 text-mid max-w-md leading-relaxed">
+        ScriptForge lưu trữ script Luau cho hàng trăm tựa game Roblox, được cộng đồng kiểm duyệt và gắn nhãn xác minh trước khi xuất hiện trên trang chủ.
+      </p>
+      <div class="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
+        <div><span class="text-hi font-mono font-semibold">2.481</span><span class="text-low"> script đã xác minh</span></div>
+        <div><span class="text-hi font-mono font-semibold">41.2K</span><span class="text-low"> lượt tải / tuần</span></div>
+        <div><span class="text-hi font-mono font-semibold">180+</span><span class="text-low"> game hỗ trợ</span></div>
+      </div>
+    </div>
+
+    <div class="hidden lg:block">
+      <div class="rounded-2xl border border-edge bg-surface overflow-hidden shadow-2xl shadow-black/40">
+        <div class="flex items-center gap-1.5 px-4 py-2.5 border-b border-edgesoft bg-surface2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#FF5F57]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#28C840]"></span>
+          <span class="ml-3 text-xs text-low font-mono">terminal — zsh</span>
+        </div>
+        <div class="p-4 font-mono text-[13px] leading-relaxed">
+          <p><span class="text-ngreen">➜</span> <span class="text-hi">scriptforge status</span></p>
+          <p class="mt-1 text-low">Đang kết nối kho lưu trữ...</p>
+          <p class="mt-1 text-mid"><span class="text-ngreen">✓</span> 8 script mới trong hôm nay</p>
+          <p class="text-mid"><span class="text-ngreen">✓</span> 2.481 script đã được xác minh</p>
+          <p class="text-mid"><span class="text-ngreen">✓</span> 0 script chứa mã độc hại</p>
+          <p class="mt-2 text-hi">scriptforge <span class="text-npurple">~</span> <span class="animate-blink">▌</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TAG FILTERS ===================== -->
+<div class="border-b border-edgesoft">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div id="tagFilters" class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <button data-tag="all" class="px-3.5 py-1.5 rounded-full border text-sm whitespace-nowrap transition-colors font-mono">Tất cả</button>
+      <button data-tag="Auto Farm" class="px-3.5 py-1.5 rounded-full border text-sm whitespace-nowrap transition-colors font-mono">Auto Farm</button>
+      <button data-tag="Admin Commands" class="px-3.5 py-1.5 rounded-full border text-sm whitespace-nowrap transition-colors font-mono">Admin Commands</button>
+      <button data-tag="UI Library" class="px-3.5 py-1.5 rounded-full border text-sm whitespace-nowrap transition-colors font-mono">UI Library</button>
+      <button data-tag="Utility" class="px-3.5 py-1.5 rounded-full border text-sm whitespace-nowrap transition-colors font-mono">Utility</button>
+      <button data-tag="Hub" class="px-3.5 py-1.5 rounded-full border text-sm whitespace-nowrap transition-colors font-mono">Hub</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SCRIPT GRID ===================== -->
+<main id="gridSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <p class="font-mono text-xs text-low mb-5"># <span id="resultCount">0</span> script được tìm thấy</p>
+
+  <div id="scriptGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+
+  <div id="emptyState" class="hidden flex-col items-center justify-center text-center py-20">
+    <p class="font-mono text-npurple text-sm mb-2">// không có kết quả</p>
+    <p class="text-hi font-medium">Không tìm thấy script phù hợp</p>
+    <p class="text-mid text-sm mt-1 max-w-xs mx-auto">Thử một bộ lọc khác, hoặc là người đầu tiên chia sẻ script cho từ khoá này.</p>
+    <button data-action="open-upload" class="mt-4 px-4 py-2 rounded-lg border border-edge text-sm text-hi hover:border-nblue/50 transition-colors">Tải lên Script</button>
+  </div>
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="border-t border-edgesoft mt-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-low text-center sm:text-left">
+    <div class="flex items-center gap-2">
+      <span class="w-6 h-6 rounded-md bg-gradient-to-br from-nblue to-npurple grid place-items-center text-[#0A0E17] font-mono font-bold text-[10px]">{ }</span>
+      <span class="font-mono text-mid">ScriptForge.lua</span>
+    </div>
+    <p class="max-w-md">Mọi script cộng đồng gửi lên đều qua kiểm duyệt trước khi gắn nhãn Verified. Không lưu trữ mã độc hại.</p>
+    <p>© 2026 ScriptForge</p>
+  </div>
+</footer>
+
+<!-- ===================== CODE VIEWER MODAL ===================== -->
+<div id="codeViewerModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="viewerTitle">
+  <div id="viewerOverlay" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+  <div class="relative h-full flex items-center justify-center p-3 sm:p-4">
+    <div class="relative w-full max-w-3xl max-h-[88vh] flex flex-col rounded-2xl border border-edge bg-surface shadow-2xl animate-modalIn overflow-hidden">
+
+      <div class="flex items-start justify-between gap-4 px-5 py-4 border-b border-edgesoft bg-surface2">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h2 id="viewerTitle" class="font-semibold text-hi leading-snug"></h2>
+            <span id="viewerVerifiedBadge" class="hidden shrink-0 items-center gap-1 px-2 py-0.5 rounded-full bg-ngreen/10 border border-ngreen/30 text-ngreen text-[11px] font-medium">
+              <svg class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.7l2.5 1.3 2.8-.3 1 2.6 2.3 1.5-.7 2.7.7 2.7-2.3 1.5-1 2.6-2.8-.3L10 18.3l-2.5-1.3-2.8.3-1-2.6-2.3-1.5.7-2.7-.7-2.7 2.3-1.5 1-2.6 2.8.3L10 1.7z"/><path d="M7.2 10.2l1.9 1.9 3.7-3.9" stroke="#0A0E17" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Verified
+            </span>
+            <span id="viewerPrivateBadge" class="hidden shrink-0 items-center gap-1 px-2 py-0.5 rounded-full bg-norange/10 border border-norange/30 text-norange text-[11px] font-medium">
+              <svg class="w-3 h-3" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="9" width="10" height="7" rx="1.5"/><path d="M7 9V6.5a3 3 0 016 0V9"/></svg>
+              Riêng tư
+            </span>
+          </div>
+          <p id="viewerGame" class="text-xs font-mono text-low mt-1"></p>
+        </div>
+        <button id="closeViewerBtn" aria-label="Đóng" class="shrink-0 w-8 h-8 grid place-items-center rounded-lg text-mid hover:text-hi hover:bg-surface transition-colors">
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l10 10M15 5L5 15" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="px-5 py-3 border-b border-edgesoft">
+        <p id="viewerDescription" class="text-sm text-mid leading-relaxed"></p>
+      </div>
+
+      <div class="flex-1 overflow-auto code-scroll bg-[#0C1019]">
+        <pre class="!m-0"><code id="viewerCode" class="language-lua"></code></pre>
+      </div>
+
+      <div class="px-5 py-3.5 border-t border-edgesoft bg-surface2 flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-4 text-xs text-low flex-wrap">
+          <span id="viewerAuthor" class="flex items-center gap-1.5"></span>
+          <span id="viewerViews" class="flex items-center gap-1.5"></span>
+          <span id="viewerLikes" class="flex items-center gap-1.5"></span>
+        </div>
+        <button id="copyCodeBtn" class="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-gradient-to-r from-nblue to-npurple text-[#0A0E17] text-sm font-semibold hover:brightness-110 active:brightness-95 transition-all">
+          <svg id="copyIcon" class="w-4 h-4 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="7" width="9" height="10" rx="1.5"/><path d="M4.5 13.5V5A1.5 1.5 0 016 3.5h6.5" /></svg>
+          <span id="copyBtnText">Sao chép Script</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== UPLOAD MODAL ===================== -->
+<div id="uploadModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="uploadTitle">
+  <div id="uploadOverlay" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+  <div class="relative h-full flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto modal-scroll">
+    <form id="uploadForm" class="relative w-full max-w-xl my-6 rounded-2xl border border-edge bg-surface shadow-2xl animate-modalIn">
+
+      <div class="flex items-center justify-between gap-4 px-5 py-4 border-b border-edgesoft bg-surface2 rounded-t-2xl">
+        <h2 id="uploadTitle" class="font-semibold text-hi">Tải lên Script mới</h2>
+        <button type="button" id="closeUploadBtn" aria-label="Đóng" class="w-8 h-8 grid place-items-center rounded-lg text-mid hover:text-hi hover:bg-surface transition-colors">
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l10 10M15 5L5 15" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="px-5 py-5 space-y-5 max-h-[65vh] overflow-y-auto modal-scroll">
+        <div>
+          <label for="uploadTitleInput" class="block text-sm text-mid mb-1.5">Tiêu đề</label>
+          <input id="uploadTitleInput" required type="text" maxlength="80" placeholder="VD: Blox Fruits Auto Farm"
+            class="w-full bg-base border border-edge rounded-lg px-3 py-2 text-sm text-hi placeholder-low focus:outline-none focus:ring-2 focus:ring-nblue/40 focus:border-nblue/60 transition-colors" />
+        </div>
+
+        <div>
+          <label for="uploadGameInput" class="block text-sm text-mid mb-1.5">Tên Game target</label>
+          <input id="uploadGameInput" required type="text" list="gameSuggestions" placeholder="VD: Blox Fruits"
+            class="w-full bg-base border border-edge rounded-lg px-3 py-2 text-sm text-hi placeholder-low focus:outline-none focus:ring-2 focus:ring-nblue/40 focus:border-nblue/60 transition-colors" />
+          <datalist id="gameSuggestions">
+            <option value="Blox Fruits"></option>
+            <option value="Pet Simulator 99"></option>
+            <option value="Grow a Garden"></option>
+            <option value="Fisch"></option>
+            <option value="Blade Ball"></option>
+            <option value="Adopt Me"></option>
+            <option value="Multi-Game"></option>
+          </datalist>
+        </div>
+
+        <div>
+          <p class="block text-sm text-mid mb-1.5">Thẻ (Tags)</p>
+          <div id="uploadTagChips" class="flex flex-wrap gap-2">
+            <button type="button" data-tag="Auto Farm" data-active="false" class="chip px-3 py-1.5 rounded-full border border-edge bg-base text-mid text-xs font-mono transition-colors hover:border-edgesoft hover:text-hi">Auto Farm</button>
+            <button type="button" data-tag="Admin Commands" data-active="false" class="chip px-3 py-1.5 rounded-full border border-edge bg-base text-mid text-xs font-mono transition-colors hover:border-edgesoft hover:text-hi">Admin Commands</button>
+            <button type="button" data-tag="UI Library" data-active="false" class="chip px-3 py-1.5 rounded-full border border-edge bg-base text-mid text-xs font-mono transition-colors hover:border-edgesoft hover:text-hi">UI Library</button>
+            <button type="button" data-tag="Utility" data-active="false" class="chip px-3 py-1.5 rounded-full border border-edge bg-base text-mid text-xs font-mono transition-colors hover:border-edgesoft hover:text-hi">Utility</button>
+            <button type="button" data-tag="Hub" data-active="false" class="chip px-3 py-1.5 rounded-full border border-edge bg-base text-mid text-xs font-mono transition-colors hover:border-edgesoft hover:text-hi">Hub</button>
+          </div>
+        </div>
+
+        <div>
+          <p class="block text-sm text-mid mb-1.5">Chế độ</p>
+          <div id="uploadModeToggle" class="inline-flex rounded-lg border border-edge p-1 bg-base">
+            <button type="button" data-mode="public" data-active="true" class="mode-btn px-4 py-1.5 rounded-md text-sm font-medium transition-colors bg-nblue text-[#0A0E17]">Công khai</button>
+            <button type="button" data-mode="private" data-active="false" class="mode-btn px-4 py-1.5 rounded-md text-sm font-medium transition-colors text-mid">Riêng tư</button>
+          </div>
+        </div>
+
+        <div>
+          <label for="uploadCodeInput" class="block text-sm text-mid mb-1.5">Nội dung code Luau</label>
+          <textarea id="uploadCodeInput" required rows="8" spellcheck="false" placeholder="-- dán code Luau của bạn vào đây"
+            class="w-full bg-base border border-edge rounded-lg px-3 py-2.5 text-sm font-mono text-hi placeholder-low resize-y focus:outline-none focus:ring-2 focus:ring-nblue/40 focus:border-nblue/60 transition-colors"></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-edgesoft bg-surface2 rounded-b-2xl">
+        <button type="button" id="cancelUploadBtn" class="px-4 py-2 rounded-lg text-sm text-mid hover:text-hi transition-colors">Hủy</button>
+        <button type="submit" class="px-4 py-2 rounded-lg bg-gradient-to-r from-nblue to-npurple text-[#0A0E17] text-sm font-semibold hover:brightness-110 active:brightness-95 transition-all">Đăng tải Script</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== TOASTS ===================== -->
+<div id="toastContainer" class="fixed bottom-5 inset-x-0 sm:inset-x-auto sm:right-5 z-[60] flex flex-col items-center sm:items-end gap-2 px-4 sm:px-0 pointer-events-none"></div>
+
+<!-- ===================== LIBRARIES ===================== -->
+<script>window.Prism = { manual: true };</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lua.min.js"></script>
+
+<!-- ===================== APP LOGIC ===================== -->
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Dữ liệu mẫu (mock database) ---------- */
+  let scripts = [
+    {
+      id: 1, title: 'Rayforge UI Library', game: 'Universal (mọi game)',
+      tags: ['UI Library'], author: 'DevKhanh', verified: true, private: false,
+      views: 18200, likes: 3100, liked: false,
+      description: 'Thư viện UI dạng cửa sổ kéo-thả, hỗ trợ Tab, Toggle, Slider — nền tảng để xây script hub riêng.',
+      code: `-- ScriptForge UI Library (demo)
+local Library = loadstring(game:HttpGet("https://example.com/lib.lua"))()
+
+local Window = Library:CreateWindow({
+    Name = "ScriptForge Hub",
+    Theme = "Dark",
+})
+
+local MainTab = Window:CreateTab("Chính")
+
+MainTab:CreateToggle({
+    Name = "Bật Auto Farm",
+    Default = false,
+    Callback = function(state)
+        _G.AutoFarmEnabled = state
+    end,
+})
+
+MainTab:CreateSlider({
+    Name = "Tốc độ Farm",
+    Min = 1,
+    Max = 10,
+    Default = 5,
+    Callback = function(value)
+        _G.FarmSpeed = value
+    end,
+})
+
+Window:SelectTab(1)`
+    },
+    {
+      id: 2, title: 'Blox Fruits Auto Farm — Devil Fruit Grinder', game: 'Blox Fruits',
+      tags: ['Auto Farm'], author: 'PhongLuau', verified: true, private: false,
+      views: 52400, likes: 9800, liked: false,
+      description: 'Tự động tìm và tiêu diệt kẻ địch gần nhất để cày EXP và trái ác quỷ không cần thao tác tay.',
+      code: `-- Blox Fruits Auto Farm - Devil Fruit Grinder
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local farmEnabled = true
+
+local function findNearestEnemy()
+    local enemies = workspace:FindFirstChild("Enemies")
+    if not enemies then return nil end
+
+    local nearest, distance = nil, math.huge
+    for _, npc in ipairs(enemies:GetChildren()) do
+        local hrp = npc:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local dist = (hrp.Position - character.HumanoidRootPart.Position).Magnitude
+            if dist < distance then
+                nearest, distance = npc, dist
+            end
+        end
+    end
+    return nearest
+end
+
+while farmEnabled do
+    local enemy = findNearestEnemy()
+    if enemy then
+        character.Humanoid:MoveTo(enemy.HumanoidRootPart.Position)
+        -- Thực hiện đòn tấn công tại đây
+    end
+    task.wait(1)
+end`
+    },
+    {
+      id: 3, title: 'Pet Simulator 99 — Auto Collect & Auto Hatch', game: 'Pet Simulator 99',
+      tags: ['Auto Farm'], author: 'HatchQueen_VN', verified: false, private: false,
+      views: 14300, likes: 2100, liked: false,
+      description: 'Tự động nhặt xu và ấp trứng liên tục, tối ưu cho việc farm pet hiếm qua đêm.',
+      code: `-- Pet Simulator 99 - Auto Collect Coins & Auto Hatch
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = game.Players.LocalPlayer
+
+local Settings = {
+    AutoCollect = true,
+    AutoHatch = true,
+    HatchEgg = "Golden Egg",
+}
+
+local function collectNearbyCoins()
+    for _, coin in ipairs(workspace.Coins:GetChildren()) do
+        if coin:IsA("BasePart") then
+            firetouchinterest(coin, player.Character.HumanoidRootPart, 0)
+            firetouchinterest(coin, player.Character.HumanoidRootPart, 1)
+        end
+    end
+end
+
+local function hatchEgg(eggName)
+    ReplicatedStorage.Remotes.HatchEgg:FireServer(eggName)
+end
+
+while true do
+    if Settings.AutoCollect then collectNearbyCoins() end
+    if Settings.AutoHatch then hatchEgg(Settings.HatchEgg) end
+    task.wait(0.5)
+end`
+    },
+    {
+      id: 4, title: 'Universal Admin Commands Panel', game: 'Universal (game có Admin)',
+      tags: ['Admin Commands'], author: 'AdminMaster', verified: true, private: false,
+      views: 31500, likes: 6200, liked: false,
+      description: 'Bảng lệnh quản trị dành cho chủ game: kick, hồi máu, bay và nhiều lệnh tuỳ biến qua chat.',
+      code: `-- Universal Admin Commands Panel
+local Players = game:GetService("Players")
+local Commands = {}
+
+Commands["kick"] = function(args)
+    local target = Players:FindFirstChild(args[1])
+    if target then
+        target:Kick("Bạn đã bị kick bởi Admin")
+    end
+end
+
+Commands["heal"] = function(args)
+    local player = Players.LocalPlayer
+    local humanoid = player.Character:FindFirstChild("Humanoid")
+    if humanoid then
+        humanoid.Health = humanoid.MaxHealth
+    end
+end
+
+local function onChatted(player, message)
+    if message:sub(1, 1) == "/" then
+        local parts = message:sub(2):split(" ")
+        local cmd = table.remove(parts, 1)
+        if Commands[cmd] then
+            Commands[cmd](parts)
+        end
+    end
+end
+
+Players.PlayerAdded:Connect(function(player)
+    player.Chatted:Connect(function(msg)
+        onChatted(player, msg)
+    end)
+end)`
+    },
+    {
+      id: 5, title: 'Grow a Garden — Auto Harvest & Auto Sell', game: 'Grow a Garden',
+      tags: ['Auto Farm'], author: 'GardenBot', verified: true, private: false,
+      views: 27800, likes: 5400, liked: false,
+      description: 'Tự động thu hoạch nông sản chín và bán vào kho khi đầy, chạy nền liên tục.',
+      code: `-- Grow a Garden - Auto Harvest & Auto Sell
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = game.Players.LocalPlayer
+
+local function getMyPlot()
+    return workspace.Plots:FindFirstChild(player.Name)
+end
+
+local function harvestAllCrops()
+    local plot = getMyPlot()
+    if not plot then return end
+    for _, crop in ipairs(plot.Crops:GetChildren()) do
+        if crop:GetAttribute("Ready") then
+            ReplicatedStorage.Remotes.Harvest:FireServer(crop)
+        end
+    end
+end
+
+local function sellInventory()
+    ReplicatedStorage.Remotes.SellAll:FireServer()
+end
+
+while true do
+    harvestAllCrops()
+    task.wait(2)
+    sellInventory()
+    task.wait(5)
+end`
+    },
+    {
+      id: 6, title: 'Fisch — Auto Fishing + Stat ESP', game: 'Fisch',
+      tags: ['Utility'], author: 'FishTV_Long', verified: false, private: false,
+      views: 9600, likes: 1450, liked: false,
+      description: 'Tự động thả cần liên tục kèm ESP hiển thị tên người chơi xung quanh trên đầu nhân vật.',
+      code: `-- Fisch - Auto Fishing & Stat ESP (Utility)
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local function castRod()
+    local rod = player.Character:FindFirstChildOfClass("Tool")
+    if rod then rod:Activate() end
+end
+
+local function showStatESP(targetPlayer)
+    local billboard = Instance.new("BillboardGui")
+    billboard.Size = UDim2.new(4, 0, 1, 0)
+    billboard.Adornee = targetPlayer.Character.Head
+    billboard.AlwaysOnTop = true
+
+    local label = Instance.new("TextLabel")
+    label.Text = targetPlayer.Name
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(80, 210, 255)
+    label.Parent = billboard
+
+    billboard.Parent = targetPlayer.Character
+end
+
+for _, p in ipairs(Players:GetPlayers()) do
+    if p ~= player and p.Character then
+        showStatESP(p)
+    end
+end
+
+while true do
+    castRod()
+    task.wait(3)
+end`
+    },
+    {
+      id: 7, title: 'ScriptForge All-in-One Hub', game: 'Multi-Game',
+      tags: ['Hub'], author: 'ScriptForgeTeam', verified: true, private: false,
+      views: 41200, likes: 8700, liked: false,
+      description: 'Một script duy nhất tự nhận diện game đang chơi và tải module tương ứng phù hợp.',
+      code: `-- ScriptForge All-in-One Hub (Multi-Game)
+local GameId = game.PlaceId
+
+local SupportedGames = {
+    [2753915549] = "BloxFruitsModule",
+    [4442272183] = "AdoptMeModule",
+    [6284583030] = "PetSim99Module",
+}
+
+local moduleName = SupportedGames[GameId]
+
+if moduleName then
+    local module = loadstring(game:HttpGet("https://example.com/modules/" .. moduleName .. ".lua"))()
+    module:Init()
+    print("[ScriptForge] Đã tải module cho game hiện tại")
+else
+    warn("[ScriptForge] Game này chưa được hỗ trợ")
+end`
+    },
+    {
+      id: 8, title: 'Blade Ball — Auto Parry', game: 'Blade Ball',
+      tags: ['Utility'], author: 'ParryKing99', verified: true, private: false,
+      views: 22100, likes: 4300, liked: false,
+      description: 'Tự động đỡ bóng dựa trên khoảng cách và thời gian phản ứng có thể tuỳ chỉnh.',
+      code: `-- Blade Ball - Auto Parry (Utility)
+local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+
+local Settings = {
+    ParryEnabled = true,
+    ReactionTime = 0.05,
+}
+
+local function getIncomingBall()
+    return workspace:FindFirstChild("Ball")
+end
+
+RunService.Heartbeat:Connect(function()
+    if not Settings.ParryEnabled then return end
+    local ball = getIncomingBall()
+    if ball and player.Character then
+        local distance = (ball.Position - player.Character.HumanoidRootPart.Position).Magnitude
+        if distance < 15 then
+            task.wait(Settings.ReactionTime)
+            -- Kích hoạt hành động Parry tại đây
+            print("Auto Parry kích hoạt!")
+        end
+    end
+end)`
+    },
+  ];
+
+  let currentTag = 'all';
+  let currentSearch = '';
+  let currentViewerScript = null;
+  let lastFocused = null;
+  let isLoggedIn = false;
+  let currentUserName = '';
+
+  /* ---------- Tiện ích ---------- */
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function formatNumber(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return String(n);
+  }
+
+  const iconEye = '<svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1.5 10S4.5 4.5 10 4.5 18.5 10 18.5 10 15.5 15.5 10 15.5 1.5 10 1.5 10z"/><circle cx="10" cy="10" r="2.3"/></svg>';
+  const iconHeart = (filled) => `<svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.6"><path d="M10 17s-6.5-4-6.5-8.7C3.5 5.6 5.4 4 7.4 4c1.2 0 2.3.6 2.6 1.5C10.3 4.6 11.4 4 12.6 4c2 0 3.9 1.6 3.9 4.3C16.5 13 10 17 10 17z"/></svg>`;
+  const iconUser = '<svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="6.5" r="3"/><path d="M3.5 17c1-3.2 3.7-5 6.5-5s5.5 1.8 6.5 5"/></svg>';
+  const iconCheck = '<svg class="w-4 h-4 text-ngreen shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const iconCopyPath = '<rect x="7" y="7" width="9" height="10" rx="1.5"/><path d="M4.5 13.5V5A1.5 1.5 0 016 3.5h6.5"/>';
+  const iconCheckPath = '<path d="M4.5 10.3l3.4 3.4L15.5 5.8" stroke-linecap="round" stroke-linejoin="round"/>';
+
+  /* ---------- DOM refs ---------- */
+  const grid = document.getElementById('scriptGrid');
+  const emptyState = document.getElementById('emptyState');
+  const resultCount = document.getElementById('resultCount');
+  const searchInput = document.getElementById('searchInput');
+  const tagFilters = document.getElementById('tagFilters');
+  const toastContainer = document.getElementById('toastContainer');
+
+  const authArea = document.getElementById('authArea');
+  const userArea = document.getElementById('userArea');
+  const userAvatar = document.getElementById('userAvatar');
+  const userName = document.getElementById('userName');
+  const userDropdownEmail = document.getElementById('userDropdownEmail');
+  const userMenuBtn = document.getElementById('userMenuBtn');
+  const userDropdown = document.getElementById('userDropdown');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const googleLoginBtn = document.getElementById('googleLoginBtn');
+  const appleLoginBtn = document.getElementById('appleLoginBtn');
+
+  const codeViewerModal = document.getElementById('codeViewerModal');
+  const viewerOverlay = document.getElementById('viewerOverlay');
+  const closeViewerBtn = document.getElementById('closeViewerBtn');
+  const viewerTitle = document.getElementById('viewerTitle');
+  const viewerGame = document.getElementById('viewerGame');
+  const viewerDescription = document.getElementById('viewerDescription');
+  const viewerVerifiedBadge = document.getElementById('viewerVerifiedBadge');
+  const viewerPrivateBadge = document.getElementById('viewerPrivateBadge');
+  const viewerAuthor = document.getElementById('viewerAuthor');
+  const viewerViews = document.getElementById('viewerViews');
+  const viewerLikes = document.getElementById('viewerLikes');
+  const viewerCode = document.getElementById('viewerCode');
+  const copyCodeBtn = document.getElementById('copyCodeBtn');
+  const copyIcon = document.getElementById('copyIcon');
+  const copyBtnText = document.getElementById('copyBtnText');
+
+  const uploadModal = document.getElementById('uploadModal');
+  const uploadOverlay = document.getElementById('uploadOverlay');
+  const uploadForm = document.getElementById('uploadForm');
+  const closeUploadBtn = document.getElementById('closeUploadBtn');
+  const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+  const uploadTitleInput = document.getElementById('uploadTitleInput');
+  const uploadGameInput = document.getElementById('uploadGameInput');
+  const uploadTagChips = document.getElementById('uploadTagChips');
+  const uploadModeToggle = document.getElementById('uploadModeToggle');
+  const uploadCodeInput = document.getElementById('uploadCodeInput');
+
+  /* ---------- Render danh sách script ---------- */
+  function renderCard(s) {
+    const tagsHtml = s.tags.map(t =>
+      `<span class="px-2 py-0.5 rounded-full bg-surface2 border border-edgesoft text-[11px] font-mono text-mid">${escapeHtml(t)}</span>`
+    ).join('');
+
+    let badgesHtml = '';
+    if (s.verified) {
+      badgesHtml += `<span class="shrink-0 flex items-center gap-1 px-2 py-1 rounded-full bg-ngreen/10 border border-ngreen/30 text-ngreen text-[11px] font-medium">
+        <svg class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.7l2.5 1.3 2.8-.3 1 2.6 2.3 1.5-.7 2.7.7 2.7-2.3 1.5-1 2.6-2.8-.3L10 18.3l-2.5-1.3-2.8.3-1-2.6-2.3-1.5.7-2.7-.7-2.7 2.3-1.5 1-2.6 2.8.3L10 1.7z"/></svg>
+        Verified</span>`;
+    } else if (s.private) {
+      badgesHtml += `<span class="shrink-0 flex items-center gap-1 px-2 py-1 rounded-full bg-norange/10 border border-norange/30 text-norange text-[11px] font-medium">Riêng tư</span>`;
+    }
+
+    return `
+    <article data-id="${s.id}" data-action="view" role="button" tabindex="0" aria-label="Xem code: ${escapeHtml(s.title)}"
+      class="group relative flex flex-col rounded-2xl border border-edge bg-surface hover:border-nblue/50 transition-colors cursor-pointer">
+      <div class="flex items-start justify-between gap-2 p-4 pb-0">
+        <div class="min-w-0">
+          <p class="text-xs text-low font-mono truncate">${escapeHtml(s.game)}</p>
+          <h3 class="mt-1 font-semibold text-hi leading-snug line-clamp-2">${escapeHtml(s.title)}</h3>
+        </div>
+        ${badgesHtml}
+      </div>
+      <p class="px-4 mt-2 text-sm text-mid line-clamp-2 leading-relaxed">${escapeHtml(s.description)}</p>
+      <div class="px-4 mt-3 flex flex-wrap gap-1.5">${tagsHtml}</div>
+      <div class="mt-4 px-4 py-3 border-t border-edgesoft flex items-center justify-between text-xs text-low">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <span class="w-5 h-5 rounded-full bg-gradient-to-br from-npurple to-nblue grid place-items-center text-[9px] font-mono font-bold text-[#0A0E17] shrink-0">${escapeHtml(s.author[0] || '?')}</span>
+          <span class="truncate text-mid">${escapeHtml(s.author)}</span>
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+          <span class="flex items-center gap-1">${iconEye}${formatNumber(s.views)}</span>
+          <button data-action="like" data-id="${s.id}" aria-label="Thích script" class="flex items-center gap-1 hover:text-npurple transition-colors ${s.liked ? 'text-npurple' : ''}">
+            ${iconHeart(s.liked)}<span data-like-count>${formatNumber(s.likes)}</span>
+          </button>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function renderScripts(list) {
+    grid.innerHTML = list.map(renderCard).join('');
+    resultCount.textContent = String(list.length);
+    const isEmpty = list.length === 0;
+    emptyState.classList.toggle('hidden', !isEmpty);
+    emptyState.classList.toggle('flex', isEmpty);
+    grid.classList.toggle('hidden', isEmpty);
+  }
+
+  function applyFilters() {
+    const q = currentSearch.trim().toLowerCase();
+    const filtered = scripts.filter(s => {
+      const matchesTag = currentTag === 'all' || s.tags.includes(currentTag);
+      const matchesSearch = !q ||
+        s.title.toLowerCase().includes(q) ||
+        s.game.toLowerCase().includes(q) ||
+        s.author.toLowerCase().includes(q);
+      return matchesTag && matchesSearch;
+    });
+    renderScripts(filtered);
+  }
+
+  function setActiveTagPill(tag) {
+    tagFilters.querySelectorAll('[data-tag]').forEach(btn => {
+      const active = btn.dataset.tag === tag;
+      btn.classList.toggle('bg-nblue', active);
+      btn.classList.toggle('text-[#0A0E17]', active);
+      btn.classList.toggle('border-nblue', active);
+      btn.classList.toggle('bg-surface', !active);
+      btn.classList.toggle('text-mid', !active);
+      btn.classList.toggle('border-edge', !active);
+    });
+  }
+
+  /* ---------- Toast ---------- */
+  function showToast(message) {
+    const el = document.createElement('div');
+    el.className = 'pointer-events-auto animate-toastIn flex items-center gap-2 px-4 py-2.5 rounded-lg border border-edge bg-surface2 text-hi text-sm shadow-xl max-w-sm';
+    el.innerHTML = `${iconCheck}<span>${escapeHtml(message)}</span>`;
+    toastContainer.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = 'opacity .25s ease, transform .25s ease';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(6px)';
+      setTimeout(() => el.remove(), 260);
+    }, 2400);
+  }
+
+  /* ---------- Modal helpers ---------- */
+  function openModal(modalEl) {
+    lastFocused = document.activeElement;
+    modalEl.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    const focusable = modalEl.querySelector('input, textarea, button');
+    if (focusable) focusable.focus();
+  }
+  function closeModal(modalEl) {
+    modalEl.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+    if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+  }
+
+  /* ---------- Xem code ---------- */
+  function openCodeViewer(id) {
+    const s = scripts.find(x => x.id === id);
+    if (!s) return;
+    currentViewerScript = s;
+
+    viewerTitle.textContent = s.title;
+    viewerGame.textContent = s.game;
+    viewerDescription.textContent = s.description;
+
+    viewerVerifiedBadge.classList.toggle('hidden', !s.verified);
+    viewerVerifiedBadge.classList.toggle('flex', s.verified);
+    viewerPrivateBadge.classList.toggle('hidden', !s.private);
+    viewerPrivateBadge.classList.toggle('flex', s.private);
+
+    viewerAuthor.innerHTML = `${iconUser}${escapeHtml(s.author)}`;
+    viewerViews.innerHTML = `${iconEye}${formatNumber(s.views)} lượt xem`;
+    viewerLikes.innerHTML = `${iconHeart(s.liked)}${formatNumber(s.likes)} lượt thích`;
+
+    viewerCode.textContent = s.code;
+    viewerCode.className = 'language-lua';
+    if (window.Prism) Prism.highlightElement(viewerCode);
+
+    copyIcon.innerHTML = iconCopyPath;
+    copyBtnText.textContent = 'Sao chép Script';
+
+    openModal(codeViewerModal);
+  }
+
+  copyCodeBtn.addEventListener('click', async () => {
+    if (!currentViewerScript) return;
+    const text = currentViewerScript.code;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) { /* no-op */ }
+      document.body.removeChild(ta);
+    }
+    copyIcon.innerHTML = iconCheckPath;
+    copyBtnText.textContent = 'Đã sao chép!';
+    showToast('Đã sao chép script vào clipboard!');
+    setTimeout(() => {
+      copyIcon.innerHTML = iconCopyPath;
+      copyBtnText.textContent = 'Sao chép Script';
+    }, 2000);
+  });
+
+  closeViewerBtn.addEventListener('click', () => closeModal(codeViewerModal));
+  viewerOverlay.addEventListener('click', () => closeModal(codeViewerModal));
+
+  /* ---------- Thích script ---------- */
+  function toggleLike(id, btnEl) {
+    const s = scripts.find(x => x.id === id);
+    if (!s) return;
+    s.liked = !s.liked;
+    s.likes += s.liked ? 1 : -1;
+    btnEl.innerHTML = `${iconHeart(s.liked)}<span data-like-count>${formatNumber(s.likes)}</span>`;
+    btnEl.classList.toggle('text-npurple', s.liked);
+  }
+
+  /* ---------- Event delegation: lưới script ---------- */
+  grid.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const id = Number(el.dataset.id);
+    if (el.dataset.action === 'view') openCodeViewer(id);
+    else if (el.dataset.action === 'like') toggleLike(id, el);
+  });
+
+  grid.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const card = e.target.closest('[data-action="view"]');
+    if (!card) return;
+    e.preventDefault();
+    openCodeViewer(Number(card.dataset.id));
+  });
+
+  /* ---------- Bộ lọc thẻ + tìm kiếm ---------- */
+  tagFilters.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-tag]');
+    if (!btn) return;
+    currentTag = btn.dataset.tag;
+    setActiveTagPill(currentTag);
+    applyFilters();
+  });
+
+  searchInput.addEventListener('input', (e) => {
+    currentSearch = e.target.value;
+    applyFilters();
+  });
+
+  /* ---------- Đăng nhập / Đăng xuất (giả lập) ---------- */
+  function setLoggedIn(name, initial, email) {
+    isLoggedIn = true;
+    currentUserName = name;
+    authArea.classList.add('hidden');
+    userArea.classList.remove('hidden');
+    userArea.classList.add('flex');
+    userAvatar.textContent = initial;
+    userName.textContent = name;
+    userDropdownEmail.textContent = email;
+  }
+  function setLoggedOut() {
+    isLoggedIn = false;
+    currentUserName = '';
+    userArea.classList.add('hidden');
+    userArea.classList.remove('flex');
+    userDropdown.classList.add('hidden');
+    authArea.classList.remove('hidden');
+  }
+
+  googleLoginBtn.addEventListener('click', () => {
+    setLoggedIn('Minh Trần', 'MT', 'minh.tran@gmail.com');
+    showToast('Đăng nhập bằng Google thành công!');
+  });
+  appleLoginBtn.addEventListener('click', () => {
+    setLoggedIn('Minh Trần', 'MT', 'minh.tran@icloud.com');
+    showToast('Đăng nhập bằng Apple thành công!');
+  });
+  userMenuBtn.addEventListener('click', () => userDropdown.classList.toggle('hidden'));
+  logoutBtn.addEventListener('click', () => {
+    setLoggedOut();
+    showToast('Bạn đã đăng xuất.');
+  });
+  document.addEventListener('click', (e) => {
+    if (!userArea.contains(e.target)) userDropdown.classList.add('hidden');
+  });
+
+  /* ---------- Modal Tải lên Script ---------- */
+  function resetUploadForm() {
+    uploadForm.reset();
+    uploadTagChips.querySelectorAll('.chip').forEach(btn => {
+      btn.dataset.active = 'false';
+      btn.classList.remove('bg-npurple/15', 'border-npurple/50', 'text-npurple');
+    });
+    uploadModeToggle.querySelectorAll('.mode-btn').forEach(btn => {
+      const isPublic = btn.dataset.mode === 'public';
+      btn.dataset.active = isPublic ? 'true' : 'false';
+      btn.classList.toggle('bg-nblue', isPublic);
+      btn.classList.toggle('text-[#0A0E17]', isPublic);
+      btn.classList.toggle('text-mid', !isPublic);
+    });
+  }
+
+  document.querySelectorAll('[data-action="open-upload"]').forEach(btn => {
+    btn.addEventListener('click', () => openModal(uploadModal));
+  });
+  closeUploadBtn.addEventListener('click', () => closeModal(uploadModal));
+  cancelUploadBtn.addEventListener('click', () => closeModal(uploadModal));
+  uploadOverlay.addEventListener('click', () => closeModal(uploadModal));
+
+  uploadTagChips.addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    const active = btn.dataset.active === 'true';
+    btn.dataset.active = active ? 'false' : 'true';
+    btn.classList.toggle('bg-npurple/15', !active);
+    btn.classList.toggle('border-npurple/50', !active);
+    btn.classList.toggle('text-npurple', !active);
+  });
+
+  uploadModeToggle.addEventListener('click', (e) => {
+    const btn = e.target.closest('.mode-btn');
+    if (!btn) return;
+    uploadModeToggle.querySelectorAll('.mode-btn').forEach(b => {
+      const sel = b === btn;
+      b.dataset.active = sel ? 'true' : 'false';
+      b.classList.toggle('bg-nblue', sel);
+      b.classList.toggle('text-[#0A0E17]', sel);
+      b.classList.toggle('text-mid', !sel);
+    });
+  });
+
+  uploadForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const title = uploadTitleInput.value.trim();
+    const gameName = uploadGameInput.value.trim();
+    const code = uploadCodeInput.value.trim();
+    const selectedTags = Array.from(uploadTagChips.querySelectorAll('.chip'))
+      .filter(b => b.dataset.active === 'true')
+      .map(b => b.dataset.tag);
+    const mode = uploadModeToggle.querySelector('.mode-btn[data-active="true"]').dataset.mode;
+
+    if (!title || !gameName || !code) {
+      showToast('Vui lòng điền đầy đủ thông tin bắt buộc.');
+      return;
+    }
+    if (selectedTags.length === 0) {
+      showToast('Vui lòng chọn ít nhất một thẻ (tag).');
+      return;
+    }
+
+    const newScript = {
+      id: Date.now(),
+      title, game: gameName, tags: selectedTags,
+      author: isLoggedIn ? currentUserName : 'Bạn (ẩn danh)',
+      verified: false,
+      views: 0, likes: 0, liked: false,
+      private: mode === 'private',
+      description: 'Script mới được cộng đồng tải lên, đang chờ kiểm duyệt.',
+      code,
+    };
+
+    scripts.unshift(newScript);
+    currentTag = 'all';
+    currentSearch = '';
+    searchInput.value = '';
+    setActiveTagPill('all');
+    applyFilters();
+
+    closeModal(uploadModal);
+    resetUploadForm();
+    showToast(mode === 'private' ? 'Đã lưu script ở chế độ riêng tư!' : 'Tải lên script thành công!');
+
+    const gridSection = document.getElementById('gridSection');
+    window.scrollTo({ top: gridSection.offsetTop - 80, behavior: 'smooth' });
+  });
+
+  /* ---------- Phím ESC đóng modal ---------- */
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!codeViewerModal.classList.contains('hidden')) closeModal(codeViewerModal);
+    if (!uploadModal.classList.contains('hidden')) closeModal(uploadModal);
+  });
+
+  /* ---------- Khởi tạo ---------- */
+  setActiveTagPill('all');
+  applyFilters();
+})();
+</script>
+</body>
+</html>
